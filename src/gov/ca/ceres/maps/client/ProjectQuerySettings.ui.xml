@@ -1,0 +1,595 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:c="urn:import:edu.ucdavis.gwt.gis.client.extras"
+	xmlns:thes="urn:import:gov.ca.ceres.thesaurustools.client">
+	<ui:style>
+		.title {
+			font-size: 22px;
+			color: #333333;
+			padding-top: 10px;
+		}
+		.status {
+			padding: 2px 0 10px 0;	
+		}
+		.subTitle {
+			font-size: 18px;
+			padding-bottom: 1px;
+			margin-bottom: 5px;
+			border-bottom: 1px solid #cccccc;
+			color: #666666;	
+		}
+		.settings {
+			margin: 5px;	
+		}
+		.queryTitle {
+			font-weight: bold;
+			padding-top: 5px;
+		}
+		.spacer {
+			height: 15px;	
+		}
+	</ui:style>
+	<g:HTMLPanel>
+		<g:HorizontalPanel width="100%">
+			<g:HTML styleName="{style.title}">Project Query Settings</g:HTML>
+			<g:Cell horizontalAlignment="ALIGN_RIGHT">
+				<c:CloseButton ui:field="close" />
+			</g:Cell>
+		</g:HorizontalPanel>
+		
+		<g:HTML ui:field="status" styleName="{style.status}"></g:HTML>
+		
+		<g:HTML styleName="{style.subTitle}" visible="false">General Settings</g:HTML>
+		<g:FlowPanel styleName="{style.settings}" visible="false">
+			<g:SimplePanel ui:field="outerDisable" />
+			<g:VerticalPanel spacing="5">
+				<g:CheckBox text="Highlight Geometry" ui:field="highlight" />
+			</g:VerticalPanel>
+			
+			<g:HTML styleName="{style.queryTitle}" visible="false">Query Type:</g:HTML>
+			<g:HorizontalPanel spacing="5">
+				<g:RadioButton text="Point Query" ui:field="pointQuery" value="true" name="queryPointType" />
+				<g:RadioButton text="Bounding Box Query" ui:field="bboxQuery" name="queryPointType" checked="true" />
+			</g:HorizontalPanel>
+		</g:FlowPanel>
+		
+		<g:HorizontalPanel spacing="5">
+				<g:RadioButton text="AND filters" ui:field="andFilters" name="filterType" checked="true"/>
+				<g:RadioButton text="OR filters" ui:field="orFilters" name="filterType" checked="false" />
+		</g:HorizontalPanel>
+		<g:HTML styleName="{style.spacer}">&nbsp;</g:HTML>
+		<g:HorizontalPanel width="450px" spacing="10" verticalAlignment="ALIGN_TOP">
+			<g:ScrollPanel  height="250px" width="250px" visible="false">
+				<g:FlowPanel ui:field="layers" />
+			</g:ScrollPanel>
+			<g:SimplePanel  width="50%">
+						<g:Grid height="200px">
+							<g:row>
+								<g:customCell>
+									<g:Label text="Search Term:"/>
+								</g:customCell>
+							</g:row>
+							<g:row>
+								<g:customCell>
+									<g:TextBox width="200px" ui:field="searchTerm" />
+								</g:customCell>
+							</g:row>
+							<g:row>
+								<g:customCell>
+									<thes:NameFiller width="200px" ui:field="leadAgency"></thes:NameFiller>
+								</g:customCell>
+							</g:row>
+							<g:row>
+								<g:customCell>
+									<thes:NameFiller width="200px" ui:field="fundingProgram"></thes:NameFiller>
+								</g:customCell>
+							</g:row>
+						</g:Grid>
+			</g:SimplePanel>
+				<g:SimplePanel  width="50%">
+						<g:Grid height="200px">
+							<g:row>
+								<g:customCell>
+									<g:Label text="Region Select Type:" width="160px"/>
+								</g:customCell>
+							</g:row>
+							<g:row>
+								<g:customCell>
+									<g:ListBox width="200px" height="100%" ui:field="regionType">
+ 							<g:item value='0'>
+    							----
+  							</g:item>
+ 							<g:item value='counties'>
+    							Counties
+  							</g:item>
+ 							<g:item value='cities'>
+    							Cites
+  							</g:item>
+ 							<g:item value='huc8'>
+    							Watershed (huc8)
+  							</g:item>
+ 							<g:item value='huc10'>
+    							Watershed (huc10)
+  							</g:item>
+ 							<g:item value='huc12'>
+    							Watershed (huc12)
+  							</g:item>
+  						</g:ListBox>
+								</g:customCell>
+							</g:row>
+							<g:row>
+								<g:customCell>
+									<g:Label text="Project Type:" width="81px"/>
+								</g:customCell>
+							</g:row>
+							<g:row>
+								<g:customCell>
+									<g:ListBox width="200px" height="100%" ui:field="projectType">
+ 							<g:item value='0'>
+    							----
+  							</g:item>
+ 							<g:item value='assessment'>
+    							assessment
+  							</g:item>
+  							<g:item value='exotic species removal'>
+    							exotic species removal
+  							</g:item>
+ 							<g:item value='on-the-ground restoration'>
+    							on-the-ground restoration
+  							</g:item>
+  							<g:item value='capacity building'>
+    							capacity building
+  							</g:item>
+ 							<g:item value='recreation improvement'>
+    							recreation improvement
+  							</g:item>
+  							<g:item value='building improvement or development'>
+    							building improvement or development
+  							</g:item>
+ 							<g:item value='planning'>
+    							planning
+  							</g:item>
+  							<g:item value='acquisition'>
+    							acquisition
+  							</g:item>
+ 							<g:item value='flood protection'>
+    							flood protection
+  							</g:item>
+  							<g:item value='education / outreach'>
+    							education / outreach
+  							</g:item>
+ 							<g:item value='water quality'>
+    							water quality
+  							</g:item>
+  							<g:item value='mitigation'>
+    							mitigation
+  							</g:item>
+ 							<g:item value='conservation'>
+    							conservation
+  							</g:item>
+  							<g:item value='recreation'>
+    							recreation
+  							</g:item>
+ 							<g:item value='monitoring'>
+    							monitoring
+  							</g:item>
+  							<g:item value='habitat'>
+    							habitat
+  							</g:item>
+  							<g:item value='open space'>
+    							open space
+  							</g:item>
+  						</g:ListBox>
+								</g:customCell>
+							</g:row>
+							<g:row>
+								<g:customCell>
+									<g:Label text="Resources Issue:" width="101px"/>
+								</g:customCell>
+							</g:row>
+							<g:row>
+								<g:customCell>
+									<g:ListBox width="200px" height="100%" ui:field="resourceIssue">
+ 							<g:item value='0'>
+    							----
+  							</g:item>
+  							
+
+ <g:item value="agriculture">agriculture</g:item>
+ <g:item value="air quality">air quality</g:item>
+ <g:item value="biomass / fuel management">biomass / fuel management</g:item>
+ <g:item value="dams">dams</g:item>
+
+ <g:item value="erosion / sedimentation">erosion / sedimentation</g:item>
+ <g:item value="exotic species">exotic species</g:item>
+ <g:item value="fire control">fire control</g:item>
+ <g:item value="fisheries">fisheries</g:item>
+ <g:item value="fisheries-freshwater">fisheries-freshwater</g:item>
+ <g:item value="fisheries-marine">fisheries-marine</g:item>
+
+ <g:item value="flood control">flood control</g:item>
+ <g:item value="forestry">forestry</g:item>
+ <g:item value="grazing">grazing</g:item>
+ <g:item value="mining">mining</g:item>
+ <g:item value="recreation">recreation</g:item>
+ <g:item value="riparian enhancement">riparian enhancement</g:item>
+
+ <g:item value="sedimentation">sedimentation</g:item>
+ <g:item value="septic systems">septic systems</g:item>
+ <g:item value="stream bank protection">stream bank protection</g:item>
+ <g:item value="toxics">toxics</g:item>
+ <g:item value="urban runoff">urban runoff</g:item>
+ <g:item value="urbanization">urbanization</g:item>
+ <g:item value="vegetation">vegetation</g:item>
+
+ <g:item value="water quality">water quality</g:item>
+ <g:item value="water quantity/supply">water quantity/supply</g:item>
+ <g:item value="water-ground water">water-ground water</g:item>
+ <g:item value="water-surface water">water-surface water</g:item>
+ <g:item value="weed control">weed control</g:item>
+ <g:item value="wetlands">wetlands</g:item>
+
+ <g:item value="wildlife">wildlife</g:item>
+ <g:item value="wildlife habitat">wildlife habitat</g:item>
+
+						</g:ListBox>
+								</g:customCell>
+							</g:row>
+							<g:row>
+								<g:customCell>
+									<g:Label text="Habitat:" width="48px"/>
+								</g:customCell>
+							</g:row>
+							<g:row>
+								<g:customCell>
+									<g:ListBox width="200px" height="100%" ui:field="habitat">
+ 							<g:item value='0'>
+    							----
+  							</g:item>
+		<g:item>
+			agriculture
+		</g:item>
+		<g:item>
+			alkali desert scrub
+		</g:item>
+		<g:item>
+			alpine communities
+		</g:item>
+		<g:item>
+			alpine dwarf-shrub
+		</g:item>
+		<g:item>
+			annual grassland
+		</g:item>
+		<g:item>
+			artificial wetland
+		</g:item>
+		<g:item>
+			aspen
+		</g:item>
+		<g:item>
+			barren
+		</g:item>
+		<g:item>
+			barren/other
+		</g:item>
+		<g:item>
+			beach and coastal dunes
+		</g:item>
+		<g:item>
+			bitterbrush
+		</g:item>
+		<g:item>
+			blue oak-foothill pine
+		</g:item>
+		<g:item>
+			blue oak woodland
+		</g:item>
+		<g:item>
+			bogs, fens, and swamps
+		</g:item>
+		<g:item>
+			brackish and fresh water marsh
+		</g:item>
+		<g:item>
+			broadleaf upland forest
+		</g:item>
+		<g:item>
+			chamise-redshank chaparral
+		</g:item>
+		<g:item>
+			chaparrals
+		</g:item>
+		<g:item>
+			closed-coned coniferous
+		</g:item>
+		<g:item>
+			closed cone pine-cypress
+		</g:item>
+		<g:item>
+			coastal and interior salt marsh
+		</g:item>
+		<g:item>
+			coastal oak woodland
+		</g:item>
+		<g:item>
+			coastal prairies
+		</g:item>
+		<g:item>
+			coastal scrub
+		</g:item>
+		<g:item>
+			coastal scrubs
+		</g:item>
+		<g:item>
+			conifer
+		</g:item>
+		<g:item>
+			deciduous orchard
+		</g:item>
+		<g:item>
+			desert
+		</g:item>
+		<g:item>
+			desert riparian
+		</g:item>
+		<g:item>
+			desert scrub
+		</g:item>
+		<g:item>
+			desert succulent shrub
+		</g:item>
+		<g:item>
+			desert wash
+		</g:item>
+		<g:item>
+			douglas fir
+		</g:item>
+		<g:item>
+			dryland grain crops
+		</g:item>
+		<g:item>
+			eastside pine
+		</g:item>
+		<g:item>
+			eastside pine forests
+		</g:item>
+		<g:item>
+			estuarine
+		</g:item>
+		<g:item>
+			eucalyptus
+		</g:item>
+		<g:item>
+			evergreen orchard
+		</g:item>
+		<g:item>
+			foothill pine woodlands
+		</g:item>
+		<g:item>
+			fresh emergent wetland
+		</g:item>
+		<g:item>
+			grazed pasture
+		</g:item>
+		<g:item>
+			great basin scrubs
+		</g:item>
+		<g:item>
+			hardwood
+		</g:item>
+		<g:item>
+			herbaceous
+		</g:item>
+		<g:item>
+			interior dunes
+		</g:item>
+		<g:item>
+			irrigated grain crops
+		</g:item>
+		<g:item>
+			irrigated hayfield
+		</g:item>
+		<g:item>
+			irrigated row and field crops
+		</g:item>
+		<g:item>
+			jeffrey pine
+		</g:item>
+		<g:item>
+			joshua tree
+		</g:item>
+		<g:item>
+			joshua tree woodlands
+		</g:item>
+		<g:item>
+			juniper
+		</g:item>
+		<g:item>
+			klamath mixed conifer
+		</g:item>
+		<g:item>
+			lacustrine
+		</g:item>
+		<g:item>
+			lodgepole pine
+		</g:item>
+		<g:item>
+			logged
+		</g:item>
+		<g:item>
+			lower montane coniferous forest
+		</g:item>
+		<g:item>
+			low sage
+		</g:item>
+		<g:item>
+			marine
+		</g:item>
+		<g:item>
+			meadows and seeps
+		</g:item>
+		<g:item>
+			mined land
+		</g:item>
+		<g:item>
+			mixed chaparral
+		</g:item>
+		<g:item>
+			mixed evergreen forest
+		</g:item>
+		<g:item>
+			mojavean desert scrubs
+		</g:item>
+		<g:item>
+			montane chaparral
+		</g:item>
+		<g:item>
+			montane hardwood
+		</g:item>
+		<g:item>
+			montane hardwood-conifer
+		</g:item>
+		<g:item>
+			montane riparian
+		</g:item>
+		<g:item>
+			north coast coniferous forest
+		</g:item>
+		<g:item>
+			oak woodlands
+		</g:item>
+		<g:item>
+			palm oasis
+		</g:item>
+		<g:item>
+			pasture
+		</g:item>
+		<g:item>
+			perennial grassland
+		</g:item>
+		<g:item>
+			pinyon and juniper woodlands
+		</g:item>
+		<g:item>
+			pinyon-juniper
+		</g:item>
+		<g:item>
+			playas
+		</g:item>
+		<g:item>
+			ponderosa pine
+		</g:item>
+		<g:item>
+			red fir
+		</g:item>
+		<g:item>
+			redwood
+		</g:item>
+		<g:item>
+			rice
+		</g:item>
+		<g:item>
+			riparian
+		</g:item>
+		<g:item>
+			riparian forest and woodlands
+		</g:item>
+		<g:item>
+			riparian scrubs and desert washes
+		</g:item>
+		<g:item>
+			riverine
+		</g:item>
+		<g:item>
+			ruderal (weed lot)
+		</g:item>
+		<g:item>
+			sagebrush
+		</g:item>
+		<g:item>
+			saline emergent wetland
+		</g:item>
+		<g:item>
+			shrub
+		</g:item>
+		<g:item>
+			sierran mixed conifer
+		</g:item>
+		<g:item>
+			sonoran desert scrubs
+		</g:item>
+		<g:item>
+			sonoran thorn woodlands
+		</g:item>
+		<g:item>
+			southern california islands
+		</g:item>
+		<g:item>
+			standing water
+		</g:item>
+		<g:item>
+			stream or river channel (in-stream restoration)
+		</g:item>
+		<g:item>
+			subalpine conifer
+		</g:item>
+		<g:item>
+			subalpine coniferous forest
+		</g:item>
+		<g:item>
+			upper montane coniferous forest
+		</g:item>
+		<g:item>
+			urban
+		</g:item>
+		<g:item>
+			urban/suburban
+		</g:item>
+		<g:item>
+			valley and foothill grasslands
+		</g:item>
+		<g:item>
+			valley arid land scrubs
+		</g:item>
+		<g:item>
+			valley foothill riparian
+		</g:item>
+		<g:item>
+			valley oak woodland
+		</g:item>
+		<g:item>
+			vernal pools
+		</g:item>
+		<g:item>
+			vineyard
+		</g:item>
+		<g:item>
+			water
+		</g:item>
+		<g:item>
+			wetland/riparian
+		</g:item>
+		<g:item>
+			wetland (unspecified type)
+		</g:item>
+		<g:item>
+			wet meadow
+		</g:item>
+		<g:item>
+			white fir
+		</g:item>
+	</g:ListBox>
+								</g:customCell>
+							</g:row>
+						</g:Grid>
+
+			</g:SimplePanel>
+		</g:HorizontalPanel>
+		<g:Button ui:field="queryBtn">Query</g:Button>
+		<g:Button ui:field="resetBtn">Reset</g:Button>
+		<g:HTML ui:field="queryCount" ui:styleName="{style.subTitle}">0 Projects in the query result</g:HTML>
+		<g:ScrollPanel ui:field="resultPanel"></g:ScrollPanel>
+	</g:HTMLPanel>
+</ui:UiBinder> 

@@ -1,0 +1,115 @@
+<!doctype html>
+<!-- The DOCTYPE declaration above will set the    -->
+<!-- browser's rendering engine into               -->
+<!-- "Standards Mode". Replacing this declaration  -->
+<!-- with a "Quirks Mode" doctype may lead to some -->
+<!-- differences in layout.                        -->
+
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+    <!--                                           -->
+    <!-- Any title is fine                         -->
+    <!--                                           -->
+    <title>NRPI Mapper</title>
+    
+    <!--                                           -->
+    <!-- This script loads your compiled module.   -->
+    <!-- If you add any GWT meta tags, they must   -->
+    <!-- be added before this line.                -->
+    <!--                                           -->
+    <script type="text/javascript" language="javascript" src="http://atlas.ca.gov/dev/nrpi/cmv/cmv.nocache.js"></script>
+        <script type="text/javascript" language="javascript">
+        var mapConfig = {
+        zoom : 6,
+        center : [-121.01, 38.22],
+	//anchor: "mappanel",
+        basemaps: [
+        
+        ],
+        datalayers: [
+	{
+	label: "Counties", 
+	url: "http://atlas.resources.ca.gov/ArcGIS/rest/services/Boundaries/CountyBoundaries/MapServer",
+	legendUrl: "http://atlas.resources.ca.gov/ArcGIS/rest/services/Boundaries/CountyBoundaries/MapServer/legend?f=json",
+                visible: false,
+                transparency : 80
+         },
+	{
+	label: "Cities", 
+	url: "http://atlas.resources.ca.gov/ArcGIS/rest/services/Boundaries/US_Cities_Counties/MapServer",
+	legendUrl: "http://atlas.resources.ca.gov/ArcGIS/rest/services/Boundaries/US_Cities_Counties/MapServer/legend?f=json",
+                visible: false,
+                transparency : 80
+         },
+	{
+	label: "USGS Quads", 
+	url: "http://atlas.resources.ca.gov/ArcGIS/rest/services/Boundaries/NAIP2010_Qauds/MapServer",
+	legendUrl: "http://atlas.resources.ca.gov/ArcGIS/rest/services/Boundaries/NAIP2010_Qauds/MapServer/legend?f=json",
+                visible: false,
+                transparency : 80
+         },
+	{
+	label: "Watersheds", 
+	url: "http://atlas.resources.ca.gov/ArcGIS/rest/services/Inland_Waters/Watershed_Boundaries/MapServer",
+	legendUrl: "http://atlas.resources.ca.gov/ArcGIS/rest/services/Inland_Waters/Watershed_Boundaries/MapServer/legend?f=json",
+                visible: true,
+                transparency : 80
+         },
+	{
+	label: "NRPI Projects", 
+	url: "https://atlas.resources.ca.gov/ArcGIS/rest/services/NRPI/NRPI_points/MapServer",
+	legendUrl: "https://atlas.resources.ca.gov/ArcGIS/rest/services/NRPI/NRPI_points/MapServer/legend?f=json",
+                visible: true,
+                transparency : 80
+         }
+
+        ],
+        
+        exportImageUrl: "http://export.myplan.casil.ucdavis.edu/cgi-bin/generateImage64.py",
+        cloudStoreUrl: "http://atlas.casil.ucdavis.edu/gwt/remoteSave.html",
+        cloudGetUrl: "http://atlas.casil.ucdavis.edu/cgi-bin/cloudstore/rest.py",
+        
+        provider: {
+         icon: "",
+         popup: "This is the map search interface for Cal-Atlas",
+         url: "http://atlas.ca.gov"
+        },
+
+	        geocoder: "esri",
+	        geocoderBias: "california",
+	        geometryServer: "http://atlas.resources.ca.gov/ArcGIS/rest/services/Geometry/GeometryServer",
+
+        title: "Cal-Atlas Maps",
+        
+        queryTool: true
+    }
+     </script>
+
+
+      </head>
+
+  <!--                                           -->
+  <!-- The body can have arbitrary html, or      -->
+  <!-- you can leave the body empty if you want  -->
+  <!-- to create a completely dynamic UI.        -->
+  <!--                                           -->
+  <body class="tundra">
+
+
+    <!-- OPTIONAL: include this if you want history support -->
+    <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
+    
+    <!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
+    <noscript>
+      <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
+        Your web browser must have JavaScript enabled
+        in order for this application to display correctly.
+      </div>
+    </noscript>
+
+<!--<div id="mappanel" style="margin:40px;width:1000px;height:800px"></div>-->
+
+  </body>
+</html>

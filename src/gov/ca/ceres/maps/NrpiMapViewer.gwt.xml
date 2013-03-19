@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to='cmv'>
+  <!-- Inherit the core Web Toolkit stuff.                        -->
+  <inherits name='com.google.gwt.user.User'/>
+  <inherits name='edu.ucdavis.gwt.gis.GwtGis' />
+  <inherits name='gov.ca.ceres.thesaurustools.ThesaurusTools'/>
+
+<!--
+ <add-linker name="xs" />
+-->
+  
+  <!-- Other module inherits                                      -->
+  <stylesheet src="CeresMapViewer.css" /> 
+
+  <!-- Specify the app entry point class.                         -->
+  <entry-point class='gov.ca.ceres.maps.client.Search'/>
+
+  <!-- Specify the paths for translatable code                    -->
+  <source path='client'/>
+
+</module>
