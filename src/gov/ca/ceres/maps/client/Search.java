@@ -122,6 +122,7 @@ public class Search implements EntryPoint {
 			public void onLoad() {
 				onClientReady();
 				initRemoveHandler(map.getMapObject());
+				projectQuerySettings.fundingProgram.loadData();
 				//initHostMap(map.getMapObject());
 			}
 		});

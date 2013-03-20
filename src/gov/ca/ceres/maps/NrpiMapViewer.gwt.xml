@@ -4,6 +4,8 @@
   <inherits name='com.google.gwt.user.User'/>
   <inherits name='edu.ucdavis.gwt.gis.GwtGis' />
   <inherits name='gov.ca.ceres.thesaurustools.ThesaurusTools'/>
+  <inherits name='com.google.gwt.ajaxloader.AjaxLoader'/>
+  <inherits name="com.google.gwt.visualization.Visualization" />
 
 <!--
  <add-linker name="xs" />
