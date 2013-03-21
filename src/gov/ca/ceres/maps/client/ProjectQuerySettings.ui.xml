@@ -82,7 +82,7 @@
 							</g:row>
 							<g:row>
 								<g:customCell>
-									<thes:VisSuggest width="200px" ui:field="fundingProgram"></thes:VisSuggest>
+									<thes:NameFiller width="200px" ui:field="fundingProgram"></thes:NameFiller>
 								</g:customCell>
 							</g:row>
 						</g:Grid>

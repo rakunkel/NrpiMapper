@@ -28,6 +28,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -80,8 +81,8 @@ public class ProjectQuerySettings extends PopupPanel {
 	public static final String API_BASE = "http://atlas.ca.gov/cgi-bin/api/";
 
 	public static final String LEADFILL_URL = API_BASE + "nameFillJson?src=lead&mode=substr&node=289&query=";
-	//public static final String FUNDFILL_URL = API_BASE + "nameFillJson?src=fund&mode=substr&node=289&query=";
-	public static final String FUNDFILL_URL = GFORGE_BASE +  "frs/admin/ceic_visvocab.php?vocab=funding program";
+	public static final String FUNDFILL_URL = API_BASE + "nameFillJson?src=fund&mode=substr&node=289&query=";
+	//public static final String FUNDFILL_URL = GFORGE_BASE +  "frs/admin/ceic_visvocab.php?vocab=funding%20program";
 	public static final String PLACEFILL_URL = API_BASE + "nameFill2?src=nrpi&name=";
 	public static final String PLACETHES_URL = API_BASE + "related?ext=";
 	public static final HTML PLACE_HELP = new HTML("It is important to tag your entry with location information. <p>Begin typing in the input field. Matching California place names will be suggested. <p>Use the Advanced Map Tool to create custom locations.");
@@ -192,9 +193,7 @@ public class ProjectQuerySettings extends PopupPanel {
 	@UiField ListBox habitat;
 	@UiField TextBox searchTerm;
 	@UiField NameFiller leadAgency;
-	//@UiField NameFiller fundingProgram;
-	@SuppressWarnings("rawtypes")
-	public @UiField VisSuggest<Relater> fundingProgram;
+	@UiField NameFiller fundingProgram;
 	@UiField RadioButton orFilters;
 	@UiField RadioButton andFilters;
 	@UiField Button queryBtn;
@@ -212,12 +211,6 @@ public class ProjectQuerySettings extends PopupPanel {
 	 /** Used by MyUiBinder to instantiate  */
 	 public @UiFactory NameFiller makeNameFiller() { // method name is insignificant
 		 return new NameFiller(false,true,false,Kind.THES);
-	 }
-
-	 /** Used by MyUiBinder to instantiate  */
-	 @SuppressWarnings("rawtypes")
-	public @UiFactory VisSuggest<Relater> makeVisSuggest() { // method name is insignificant
-		 return new VisSuggest<Relater>(false);
 	 }
 
 	 public Geometry getSelectedGeometry() {
@@ -304,16 +297,9 @@ public class ProjectQuerySettings extends PopupPanel {
 		leadAgency.setLabel("Lead Agency");
 		leadAgency.setURL(LEADFILL_URL);
 		
-//		themeFiller.setOpen(false);
-//		themeFiller.setLabel("Standard Topic Categories: ");
-//		themeFiller.visUrl = THEMEFILL_URL;
-//		themeFiller.setHelpHint(THEMETHES_HELP);
-//		themeFiller.setWidth("320px");
-
-		fundingProgram.setOpen(false);
 		fundingProgram.setWidth("200px");
 		fundingProgram.setLabel("Funding Program");
-		fundingProgram.setUrl(FUNDFILL_URL);
+		fundingProgram.setURL(FUNDFILL_URL);
 		
 		getElement().getStyle().setZIndex(8000);
 		setWidth("500px");
@@ -395,9 +381,13 @@ public class ProjectQuerySettings extends PopupPanel {
 			if (!where.isEmpty()) { where += join;}
 			where += " upper(LEAD_AGENC) LIKE '%" + leadAgency.nameBox.getValue().toUpperCase() + "%'";
 		}
-		if (!fundingProgram.suggestbox.getValue().isEmpty()) {
+		if (!fundingProgram.nameBox.getValue().isEmpty()) {
 			if (!where.isEmpty()) { where += join;}
-			where += " upper(FUNDING_PR) LIKE '%" + fundingProgram.suggestbox.getValue().toUpperCase() + "%'";
+			// strip the agency prepend
+			String s = new String(fundingProgram.nameBox.getValue());
+			s = s.replaceFirst(".+--\\s", "");
+			Window.alert(s);
+			where += " upper(FUNDING_PR) LIKE '%" + s.toUpperCase().trim() + "%'";
 		}
 		if (!projectType.getValue(projectType.getSelectedIndex()).equals("0")) {
 			if (!where.isEmpty()) { where += join;}
