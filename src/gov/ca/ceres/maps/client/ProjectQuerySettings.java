@@ -6,9 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import gov.ca.ceres.thesaurustools.client.NameFiller;
-import gov.ca.ceres.thesaurustools.client.Relater;
-import gov.ca.ceres.thesaurustools.client.VisSuggest;
-import gov.ca.ceres.thesaurustools.client.ThesSelection.Kind;
+import gov.ca.ceres.thesaurustools.client.Selection.Kind;
 
 
 import com.google.gwt.core.client.GWT;
@@ -210,7 +208,7 @@ public class ProjectQuerySettings extends PopupPanel {
 	
 	 /** Used by MyUiBinder to instantiate  */
 	 public @UiFactory NameFiller makeNameFiller() { // method name is insignificant
-		 return new NameFiller(false,true,false,Kind.THES);
+		 return new NameFiller(false,true,false);
 	 }
 
 	 public Geometry getSelectedGeometry() {
@@ -386,7 +384,6 @@ public class ProjectQuerySettings extends PopupPanel {
 			// strip the agency prepend
 			String s = new String(fundingProgram.nameBox.getValue());
 			s = s.replaceFirst(".+--\\s", "");
-			Window.alert(s);
 			where += " upper(FUNDING_PR) LIKE '%" + s.toUpperCase().trim() + "%'";
 		}
 		if (!projectType.getValue(projectType.getSelectedIndex()).equals("0")) {
@@ -734,6 +731,13 @@ public class ProjectQuerySettings extends PopupPanel {
 		resourceIssue.setSelectedIndex(0);
 		projectType.setSelectedIndex(0);
 		habitat.setSelectedIndex(0);
+		regionType.setSelectedIndex(0);
+		myHost.removeGraphics();
+		myHost.currentLayer = "";
+		myHost.setOverlay();
+		myHost.centerMap();
+	    
+		
 		
 	}
 	public void addRow(String title, String link) {

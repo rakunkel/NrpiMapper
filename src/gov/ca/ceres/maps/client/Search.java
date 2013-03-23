@@ -1,5 +1,7 @@
 package gov.ca.ceres.maps.client;
 
+import java.util.Iterator;
+
 import edu.ucdavis.gwt.gis.client.CompatibilityTester;
 import edu.ucdavis.gwt.gis.client.DataManager;
 import edu.ucdavis.gwt.gis.client.Debugger;
@@ -25,6 +27,8 @@ import edu.ucdavis.cstars.client.dojo.Color;
 import edu.ucdavis.cstars.client.event.ClickHandler;
 import edu.ucdavis.cstars.client.event.MouseEvent;
 import edu.ucdavis.cstars.client.event.QueryTaskCompleteHandler;
+import edu.ucdavis.cstars.client.geometry.Geometry;
+import edu.ucdavis.cstars.client.geometry.Point;
 import edu.ucdavis.cstars.client.layers.ArcGISDynamicMapServiceLayer;
 import edu.ucdavis.cstars.client.layers.GraphicsLayer;
 import edu.ucdavis.cstars.client.layers.ImageParameters;
@@ -45,7 +49,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class Search implements EntryPoint {
 
 	private GisClient mapClient = null;
-	private MapWidget map = null;
+    public MapWidget map = null;
 	private AlbumSearchWidget search = new AlbumSearchWidget();
 	private AddLayerMenu addLayerMenu = null;
 	ProjectQuerySettings projectQuerySettings = null;
@@ -81,7 +85,26 @@ public class Search implements EntryPoint {
 	
     private String cbaseUrl = "http://ec2-50-18-14-244.us-west-1.compute.amazonaws.com/cgi-bin/cbase.py";
 	
-	public void onModuleLoad() {
+	/**
+	 * Center the map for the first time
+	 **/
+	public void centerMap() {
+		if( DataManager.INSTANCE.getConfig().hasCenterPoint() ){
+			Point centerPoint = Point.create(
+						(float) DataManager.INSTANCE.getConfig().getCenterx(), 
+						(float) DataManager.INSTANCE.getConfig().getCentery(), 
+						SpatialReference.create(4269)
+			);
+			centerPoint = (Point) Geometry.geographicToWebMercator(centerPoint);
+			try {
+				map.centerAndZoom(centerPoint, DataManager.INSTANCE.getConfig().getZoomLevel());
+			} catch (Exception e) {
+				Debugger.INSTANCE.catchException(e, "GisClient", "centerMap()");
+			}
+		}
+	}
+	
+    public void onModuleLoad() {
 		
 		GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler(){
 			@Override
@@ -181,7 +204,7 @@ public class Search implements EntryPoint {
 		
 		projectQuerySettings.setMap(map);
 		projectQuerySettings.setPopupPosition(80, 50);
-		projectQuerySettings.show();
+		//projectQuerySettings.show();
 
 		//menuPanel.add(ProjectQuerySettings.INSTANCE.getToolbarIcon());
 		
@@ -381,7 +404,15 @@ public class Search implements EntryPoint {
 		 
 	}
 
-	public void setOverlay() {
+	 public void removeGraphics() {
+		 Iterator<Graphic> iter = projectQuerySettings.selectedGraphiclist.iterator();
+		 while (iter.hasNext()) {
+			     map.removeLayer(iter.next().getLayer());
+		    	 iter.remove();
+		 }
+	 }
+	 
+	 public void setOverlay() {
 		hucLayer.setVisibility(false);   
         countyLayer.setVisibility(false);   
         cityLayer.setVisibility(false);   

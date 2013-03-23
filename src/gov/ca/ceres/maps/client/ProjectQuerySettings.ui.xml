@@ -129,56 +129,62 @@
  							<g:item value='0'>
     							----
   							</g:item>
+  							<g:item value='acquisition'>
+    							acquisition
+  							</g:item>
  							<g:item value='assessment'>
     							assessment
-  							</g:item>
-  							<g:item value='exotic species removal'>
-    							exotic species removal
-  							</g:item>
- 							<g:item value='on-the-ground restoration'>
-    							on-the-ground restoration
-  							</g:item>
-  							<g:item value='capacity building'>
-    							capacity building
-  							</g:item>
- 							<g:item value='recreation improvement'>
-    							recreation improvement
   							</g:item>
   							<g:item value='building improvement or development'>
     							building improvement or development
   							</g:item>
- 							<g:item value='planning'>
-    							planning
+  							<g:item value='capacity building'>
+    							capacity building
   							</g:item>
-  							<g:item value='acquisition'>
-    							acquisition
-  							</g:item>
- 							<g:item value='flood protection'>
-    							flood protection
-  							</g:item>
-  							<g:item value='education / outreach'>
-    							education / outreach
-  							</g:item>
- 							<g:item value='water quality'>
-    							water quality
-  							</g:item>
-  							<g:item value='mitigation'>
-    							mitigation
+  							<g:item value='climate change'>
+    							climate change
   							</g:item>
  							<g:item value='conservation'>
     							conservation
   							</g:item>
-  							<g:item value='recreation'>
-    							recreation
+  							<g:item value='education / outreach'>
+    							education / outreach
   							</g:item>
- 							<g:item value='monitoring'>
-    							monitoring
+  							<g:item value='exotic species removal'>
+    							exotic species removal
+  							</g:item>
+ 							<g:item value='flood protection'>
+    							flood protection
   							</g:item>
   							<g:item value='habitat'>
     							habitat
   							</g:item>
+  							<g:item value='mitigation'>
+    							mitigation
+  							</g:item>
+ 							<g:item value='monitoring'>
+    							monitoring
+  							</g:item>
+ 							<g:item value='on-the-ground restoration'>
+    							on-the-ground restoration
+  							</g:item>
   							<g:item value='open space'>
     							open space
+  							</g:item>
+ 							<g:item value='planning'>
+    							planning
+  							</g:item>
+  							<g:item value='recreation'>
+    							recreation
+  							</g:item>
+ 							<g:item value='recreation improvement'>
+    							recreation improvement
+  							</g:item>
+ 							<g:item value='sustainability'>
+    							sustainability
+  							</g:item>
+ 							<g:item value='water quality'>
+    							water quality
   							</g:item>
   						</g:ListBox>
 								</g:customCell>

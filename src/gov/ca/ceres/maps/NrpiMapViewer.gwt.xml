@@ -2,6 +2,7 @@
 <module rename-to='cmv'>
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User'/>
+  <inherits name='edu.ucdavis.cstars.EsriGwt' />
   <inherits name='edu.ucdavis.gwt.gis.GwtGis' />
   <inherits name='gov.ca.ceres.thesaurustools.ThesaurusTools'/>
   <inherits name='com.google.gwt.ajaxloader.AjaxLoader'/>
