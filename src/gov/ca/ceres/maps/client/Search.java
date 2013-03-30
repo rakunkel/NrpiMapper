@@ -62,11 +62,15 @@ public class Search implements EntryPoint {
     QueryTask queryTaskHuc8 = QueryTask.create("http://atlas.resources.ca.gov/ArcGIS/rest/services/Inland_Waters/Watershed_Boundaries/MapServer/0");
     QueryTask queryTaskHuc10 = QueryTask.create("http://atlas.resources.ca.gov/ArcGIS/rest/services/Inland_Waters/Watershed_Boundaries/MapServer/1");
     QueryTask queryTaskHuc12 = QueryTask.create("http://atlas.resources.ca.gov/ArcGIS/rest/services/Inland_Waters/Watershed_Boundaries/MapServer/2");
+    QueryTask queryTaskAssembly = QueryTask.create("http://atlas.resources.ca.gov/ArcGIS/rest/services/Boundaries/ElectedOfficials/MapServer/0");
+    QueryTask queryTaskSenate = QueryTask.create("http://atlas.resources.ca.gov/ArcGIS/rest/services/Boundaries/ElectedOfficials/MapServer/1");
+    QueryTask queryTaskCongress = QueryTask.create("http://atlas.resources.ca.gov/ArcGIS/rest/services/Boundaries/ElectedOfficials/MapServer/2");
     QueryTask queryTaskProjects = QueryTask.create("http://atlas.resources.ca.gov/ArcGIS/rest/services/NRPI/NRPI_points/MapServer/0");	
 
     ArcGISDynamicMapServiceLayer hucLayer = null;
     ArcGISDynamicMapServiceLayer countyLayer = null;
     ArcGISDynamicMapServiceLayer cityLayer = null;
+    ArcGISDynamicMapServiceLayer electLayer = null;
     
     public String currentLayer = "";
     String countyLayerId;
@@ -75,15 +79,26 @@ public class Search implements EntryPoint {
     String huc8LayerId;
     String huc10LayerId;
     String huc12LayerId;
+    String electLayerId;
+    String assemblyLayerId;
+    String senateLayerId;
+    String congressLayerId;
     String hucIdLine;
+    String distIdLine;
+    String distFieldName;
     Color drawColor = null;
     Color countyColor = Color.create(150, 127, 96, 0.4);
     Color cityColor = Color.create(52,52,52, 0.4);
+    
     Color huc8Color = Color.create(0,100,0, 0.4);
     Color huc10Color = Color.create(255,170,0, 0.4);
     Color huc12Color = Color.create(0,197,255, 0.4);
+
+    Color assemblyColor = Color.create(230, 0, 0, 0.4);
+    Color senateColor = Color.create(132, 0, 168, 0.4);
+    Color congressColor = Color.create(38,115, 0, 0.4);
 	
-    private String cbaseUrl = "http://ec2-50-18-14-244.us-west-1.compute.amazonaws.com/cgi-bin/cbase.py";
+//    private String cbaseUrl = "http://ec2-50-18-14-244.us-west-1.compute.amazonaws.com/cgi-bin/cbase.py";
 	
 	/**
 	 * Center the map for the first time
@@ -230,6 +245,9 @@ public class Search implements EntryPoint {
 	        mapClient.getMapWidget().addLayer(hucLayer);
 	        hucLayerId = hucLayer.getId();        
 		
+	        electLayer = ArcGISDynamicMapServiceLayer.create("http://atlas.resources.ca.gov/ArcGIS/rest/services/Boundaries/ElectedOfficials/MapServer");
+	        mapClient.getMapWidget().addLayer(electLayer);
+	        electLayerId = electLayer.getId();        
 
 	        //identify proxy page to use if the toJson payload to the geometry service is greater than 2000 characters.
 	        //If this null or not available the buffer operation will not work.  Otherwise it will do a http post to the proxy.
@@ -267,6 +285,18 @@ public class Search implements EntryPoint {
 	        			query.setOutFields(new String[]{"NAME"});
 	        			queryTaskCities.execute(query);
 	        			//dojo.byId('messages').innerHTML = "<b>Executing City Intersection Query...</b>";
+	        		}
+	        		else if(currentLayer.equals("assembly")) {
+	        			query.setOutFields(new String[]{"Boundaries.DBO.CA_State_Assembly.District"});
+	        			queryTaskAssembly.execute(query);
+	        		}
+	        		else if(currentLayer.equals("senate")) {
+	        			query.setOutFields(new String[]{"Boundaries.DBO.CA_State_Senators.District"});
+	        			queryTaskSenate.execute(query);
+	        		}
+	        		else if(currentLayer.equals("congress")) {
+	        			query.setOutFields(new String[]{"CA_Congressonial_Reps.District"});
+	        			queryTaskCongress.execute(query);
 	        		}
 	        		else if(currentLayer.equals("huc8")) {
 	        			query.setOutFields(new String[]{"Name","SourceDataDescription","HUC8"});
@@ -357,9 +387,50 @@ public class Search implements EntryPoint {
 				}
 	        });
 
+	        queryTaskAssembly.addCompleteHandler(new QueryTaskCompleteHandler(){
+
+				@Override
+				public void onComplete(FeatureSet featureSet) {
+					renderDists(featureSet);
+				}
+	        });
+	        queryTaskSenate.addCompleteHandler(new QueryTaskCompleteHandler(){
+
+				@Override
+				public void onComplete(FeatureSet featureSet) {
+					renderDists(featureSet);
+				}
+	        });
+	        queryTaskCongress.addCompleteHandler(new QueryTaskCompleteHandler(){
+
+				@Override
+				public void onComplete(FeatureSet featureSet) {
+					renderDists(featureSet);
+				}
+	        });
 	        	
 	        setOverlay();
 	}
+
+    private void renderDists(FeatureSet featureSet) {
+
+    	Graphic firstGraphic = featureSet.getFeatures().get(0);
+    	SimpleFillSymbol symbol = SimpleFillSymbol.create(SimpleFillSymbol.StyleType.STYLE_SOLID, SimpleLineSymbol.create(SimpleLineSymbol.StyleType.STYLE_SOLID, drawColor, 1), drawColor);
+
+    	GraphicsLayer.Options options = GraphicsLayer.Options.create();
+    	String graphicId = currentLayer + firstGraphic.getAttributes().getInt(distFieldName);
+    	options.setId(graphicId);    
+    	GraphicsLayer glayer = GraphicsLayer.create(options);
+    	firstGraphic.setSymbol(symbol);
+    	String infoTempContent =  distIdLine;
+    	infoTempContent +=  "<br/></br><A href='#' onclick='__gwt_search_removeLayer(\"" + glayer.getId() + "\");'>Remove Feature</A>";
+    	InfoTemplate infoTemplate = InfoTemplate.create("", infoTempContent);
+    	firstGraphic.setInfoTemplate(infoTemplate);
+    	map.addLayer(glayer);
+    	glayer.add(firstGraphic);
+    	projectQuerySettings.selectedGraphiclist.add(firstGraphic);
+
+    }
 
     private void renderHucs(FeatureSet featureSet) {
 
@@ -381,7 +452,6 @@ public class Search implements EntryPoint {
     	projectQuerySettings.selectedGraphiclist.add(firstGraphic);
 
     }
-
 	 private void removeLayer(String id) {
 		 // remove the graphic from the list used for project queries
 	     projectQuerySettings.removeGraphicByTitle(((GraphicsLayer) map.getLayer(id)).getGraphics().get(0).getTitle());
@@ -416,6 +486,7 @@ public class Search implements EntryPoint {
 		hucLayer.setVisibility(false);   
         countyLayer.setVisibility(false);   
         cityLayer.setVisibility(false);   
+        electLayer.setVisibility(false);
         
         if(currentLayer.equals("counties")) { 
         	countyLayer.setVisibility(true);
@@ -443,6 +514,27 @@ public class Search implements EntryPoint {
            drawColor = huc12Color;
            hucLayer.setVisibility(true);   
         }
+        else if(currentLayer.equals("assembly")) {
+    	    electLayer.setVisibleLayers(new int[]{0});
+    	    distFieldName = "Boundaries.DBO.CA_State_Assembly.District";
+            distIdLine =  "<br/>California Assembly District: ${" + distFieldName + "}";
+            drawColor = assemblyColor;
+            electLayer.setVisibility(true);   
+         }
+        else if(currentLayer.equals("senate")) {
+    	    electLayer.setVisibleLayers(new int[]{1});
+    	    distFieldName = "Boundaries.DBO.CA_State_Senators.District";
+            distIdLine =  "<br/>California Senate District: ${" + distFieldName + "}";
+            drawColor = senateColor;
+            electLayer.setVisibility(true);   
+         }
+        else if(currentLayer.equals("congress")) {
+    	    electLayer.setVisibleLayers(new int[]{2});
+    	    distFieldName = "CA_Congressonial_Reps.District";
+            distIdLine =  "<br/>California Congressional District: ${" + distFieldName + "}";
+            drawColor = congressColor;
+            electLayer.setVisibility(true);   
+         }
 
       }
 

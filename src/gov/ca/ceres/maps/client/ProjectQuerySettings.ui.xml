@@ -106,6 +106,15 @@
  							<g:item value='cities'>
     							Cites
   							</g:item>
+ 							<g:item value='assembly'>
+    							Assembly Districts
+  							</g:item>
+ 							<g:item value='senate'>
+    							Senate Districts
+  							</g:item>
+ 							<g:item value='congress'>
+    							Congressional District
+  							</g:item>
  							<g:item value='huc8'>
     							Watershed (huc8)
   							</g:item>
