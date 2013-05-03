@@ -66,13 +66,19 @@ public class Search implements EntryPoint {
     QueryTask queryTaskSenate = QueryTask.create("http://atlas.resources.ca.gov/ArcGIS/rest/services/Boundaries/ElectedOfficials/MapServer/1");
     QueryTask queryTaskCongress = QueryTask.create("http://atlas.resources.ca.gov/ArcGIS/rest/services/Boundaries/ElectedOfficials/MapServer/2");
     QueryTask queryTaskProjects = QueryTask.create("http://atlas.resources.ca.gov/ArcGIS/rest/services/NRPI/NRPI_points/MapServer/0");	
+    QueryTask queryTaskRcd = QueryTask.create("http://atlas.resources.ca.gov/ArcGIS/rest/services/Boundaries/CA_RCD_Boundaries/MapServer/2");
+    QueryTask queryTaskRcdRegion = QueryTask.create("http://atlas.resources.ca.gov/ArcGIS/rest/services/Boundaries/CA_RCD_Boundaries/MapServer/0");
+    QueryTask queryTaskRwqcbRegion = QueryTask.create("http://gispublic.waterboards.ca.gov/ArcGIS/rest/services/Administrative/Regional_Board_Boundaries/MapServer/1");
 
     ArcGISDynamicMapServiceLayer hucLayer = null;
     ArcGISDynamicMapServiceLayer countyLayer = null;
     ArcGISDynamicMapServiceLayer cityLayer = null;
     ArcGISDynamicMapServiceLayer electLayer = null;
+    ArcGISDynamicMapServiceLayer rcdLayer = null;
+    ArcGISDynamicMapServiceLayer rwqcbLayer = null;
     
     public String currentLayer = "";
+
     String countyLayerId;
     String cityLayerId;
     String hucLayerId;
@@ -83,13 +89,24 @@ public class Search implements EntryPoint {
     String assemblyLayerId;
     String senateLayerId;
     String congressLayerId;
+    String rcdLayerId;
+    String rcdRegionLayerId;
+    String rwqcbLayerId;
+
     String hucIdLine;
     String distIdLine;
     String distFieldName;
+
     Color drawColor = null;
+
     Color countyColor = Color.create(150, 127, 96, 0.4);
     Color cityColor = Color.create(52,52,52, 0.4);
     
+    Color rcdColor = Color.create(100, 100, 0, 0.4);
+    Color rcdRegionColor = Color.create(100,100,0, 0.4);
+
+    Color rwqcbRegionColor = Color.create(0,0,255, 0.4);
+
     Color huc8Color = Color.create(0,100,0, 0.4);
     Color huc10Color = Color.create(255,170,0, 0.4);
     Color huc12Color = Color.create(0,197,255, 0.4);
@@ -98,7 +115,6 @@ public class Search implements EntryPoint {
     Color senateColor = Color.create(132, 0, 168, 0.4);
     Color congressColor = Color.create(38,115, 0, 0.4);
 	
-//    private String cbaseUrl = "http://ec2-50-18-14-244.us-west-1.compute.amazonaws.com/cgi-bin/cbase.py";
 	
 	/**
 	 * Center the map for the first time
@@ -201,7 +217,6 @@ public class Search implements EntryPoint {
 
 		map = mapClient.getMapWidget();
 
-//		map.getInfoWindow().resize(400, 300);
 		projectQuerySettings = new ProjectQuerySettings();
 		projectQuerySettings.setMyHost(this);
 		ProjectQueryMenu pqm = new ProjectQueryMenu();
@@ -219,9 +234,6 @@ public class Search implements EntryPoint {
 		
 		projectQuerySettings.setMap(map);
 		projectQuerySettings.setPopupPosition(80, 50);
-		//projectQuerySettings.show();
-
-		//menuPanel.add(ProjectQuerySettings.INSTANCE.getToolbarIcon());
 		
 		mapClient.expandLegends(true);
 		
@@ -249,6 +261,16 @@ public class Search implements EntryPoint {
 	        mapClient.getMapWidget().addLayer(electLayer);
 	        electLayerId = electLayer.getId();        
 
+	        rcdLayer = ArcGISDynamicMapServiceLayer.create("http://atlas.resources.ca.gov/ArcGIS/rest/services/Boundaries/CA_RCD_Boundaries/MapServer");
+	        mapClient.getMapWidget().addLayer(rcdLayer);
+	        rcdLayer.setOpacity(0.2);
+	        rcdLayerId = rcdLayer.getId();        
+
+	        rwqcbLayer = ArcGISDynamicMapServiceLayer.create("http://gispublic.waterboards.ca.gov/ArcGIS/rest/services/Administrative/Regional_Board_Boundaries/MapServer");
+	        mapClient.getMapWidget().addLayer(rwqcbLayer);
+	        rwqcbLayer.setOpacity(0.3);
+	        rwqcbLayerId = rwqcbLayer.getId();        
+
 	        //identify proxy page to use if the toJson payload to the geometry service is greater than 2000 characters.
 	        //If this null or not available the buffer operation will not work.  Otherwise it will do a http post to the proxy.
 	        ESRI.setProxyUrl("esri/proxy.php");
@@ -264,7 +286,7 @@ public class Search implements EntryPoint {
 	        query2.setOutSpatialReference(sr);        
 	        query2.setOutFields(new String[]{"TITLE","LINK","DESCRIPTIO"});
 	        
-	        mapClient.getMapWidget().getInfoWindow().resize(235, 150);
+	        //mapClient.getMapWidget().getInfoWindow().resize(235, 150);
 	        
 	        //mapClient.getMapWidget().addMouseUpHandler(new MouseUpHandler(){
 	        map.addClickHandler(new ClickHandler() {
@@ -279,12 +301,22 @@ public class Search implements EntryPoint {
 	        		if(currentLayer.equals("counties")) {
 	        			query.setOutFields(new String[]{"NAME_PCASE"});
 	        			queryTaskCounties.execute(query);
-	        			//dojo.byId('messages').innerHTML = "<b>Executing County Intersection Query...</b>";
 	        		}
 	        		else if(currentLayer.equals("cities")) {
 	        			query.setOutFields(new String[]{"NAME"});
 	        			queryTaskCities.execute(query);
-	        			//dojo.byId('messages').innerHTML = "<b>Executing City Intersection Query...</b>";
+	        		}
+	        		else if(currentLayer.equals("rcds")) {
+	        			query.setOutFields(new String[]{"RCDNAME"});
+	        			queryTaskRcd.execute(query);
+	        		}
+	        		else if(currentLayer.equals("rcdRegions")) {
+	        			query.setOutFields(new String[]{"RCD"});
+	        			queryTaskRcdRegion.execute(query);
+	        		}
+	        		else if(currentLayer.equals("rwqcbRegions")) {
+	        			query.setOutFields(new String[]{"RB_NAME"});
+	        			queryTaskRwqcbRegion.execute(query);
 	        		}
 	        		else if(currentLayer.equals("assembly")) {
 	        			query.setOutFields(new String[]{"Boundaries.DBO.CA_State_Assembly.District"});
@@ -363,6 +395,72 @@ public class Search implements EntryPoint {
 
 				}
 	        	
+	        });
+
+	        queryTaskRwqcbRegion.addCompleteHandler(new QueryTaskCompleteHandler(){
+
+				@Override
+				public void onComplete(FeatureSet featureSet) {
+			        Graphic firstGraphic = featureSet.getFeatures().get(0);
+			        SimpleFillSymbol symbol = SimpleFillSymbol.create(SimpleFillSymbol.StyleType.STYLE_SOLID, SimpleLineSymbol.create(SimpleLineSymbol.StyleType.STYLE_SOLID, rwqcbRegionColor, 1), rwqcbRegionColor);
+
+			        GraphicsLayer.Options options = GraphicsLayer.Options.create();
+			        String graphicId = firstGraphic.getAttributes().getString("RB_NAME");
+			        options.setId(graphicId);    
+			        GraphicsLayer glayer = GraphicsLayer.create(options);
+			        firstGraphic.setSymbol(symbol);
+			        String infoTempContent =  "<br/><A href='#' onclick='__gwt_search_removeLayer(\"" + glayer.getId() + "\");'>Remove Feature</A>";
+			        InfoTemplate infoTemplate = InfoTemplate.create("", infoTempContent);
+			        infoTemplate.setTitle("SWQCB Region: ${RB_NAME}");
+			        firstGraphic.setInfoTemplate(infoTemplate);
+				    map.addLayer(glayer);
+			        glayer.add(firstGraphic);
+			        projectQuerySettings.selectedGraphiclist.add(firstGraphic);
+				}
+	        });
+
+	        queryTaskRcd.addCompleteHandler(new QueryTaskCompleteHandler(){
+
+				@Override
+				public void onComplete(FeatureSet featureSet) {
+			        Graphic firstGraphic = featureSet.getFeatures().get(0);
+			        SimpleFillSymbol symbol = SimpleFillSymbol.create(SimpleFillSymbol.StyleType.STYLE_SOLID, SimpleLineSymbol.create(SimpleLineSymbol.StyleType.STYLE_SOLID, rcdColor, 1), rcdColor);
+
+			        GraphicsLayer.Options options = GraphicsLayer.Options.create();
+			        String graphicId = firstGraphic.getAttributes().getString("RCDNAME");
+			        options.setId(graphicId);    
+			        GraphicsLayer glayer = GraphicsLayer.create(options);
+			        firstGraphic.setSymbol(symbol);
+			        String infoTempContent =  "<br/><A href='#' onclick='__gwt_search_removeLayer(\"" + glayer.getId() + "\");'>Remove Feature</A>";
+			        InfoTemplate infoTemplate = InfoTemplate.create("", infoTempContent);
+			        infoTemplate.setTitle("RCD District: ${RCDNAME}");
+			        firstGraphic.setInfoTemplate(infoTemplate);
+				    map.addLayer(glayer);
+			        glayer.add(firstGraphic);
+			        projectQuerySettings.selectedGraphiclist.add(firstGraphic);
+				}
+	        });
+
+	        queryTaskRcdRegion.addCompleteHandler(new QueryTaskCompleteHandler(){
+
+				@Override
+				public void onComplete(FeatureSet featureSet) {
+			        Graphic firstGraphic = featureSet.getFeatures().get(0);
+			        SimpleFillSymbol symbol = SimpleFillSymbol.create(SimpleFillSymbol.StyleType.STYLE_SOLID, SimpleLineSymbol.create(SimpleLineSymbol.StyleType.STYLE_SOLID, rcdRegionColor, 1), rcdRegionColor);
+
+			        GraphicsLayer.Options options = GraphicsLayer.Options.create();
+			        String graphicId = firstGraphic.getAttributes().getString("RCD");
+			        options.setId(graphicId);    
+			        GraphicsLayer glayer = GraphicsLayer.create(options);
+			        firstGraphic.setSymbol(symbol);
+			        String infoTempContent =  "<br/><A href='#' onclick='__gwt_search_removeLayer(\"" + glayer.getId() + "\");'>Remove Feature</A>";
+			        InfoTemplate infoTemplate = InfoTemplate.create("", infoTempContent);
+			        infoTemplate.setTitle("RCD Region: ${RCD}");
+			        firstGraphic.setInfoTemplate(infoTemplate);
+				    map.addLayer(glayer);
+			        glayer.add(firstGraphic);
+			        projectQuerySettings.selectedGraphiclist.add(firstGraphic);
+				}
 	        });
 
 	        queryTaskHuc8.addCompleteHandler(new QueryTaskCompleteHandler(){
@@ -487,6 +585,8 @@ public class Search implements EntryPoint {
         countyLayer.setVisibility(false);   
         cityLayer.setVisibility(false);   
         electLayer.setVisibility(false);
+        rcdLayer.setVisibility(false);
+        rwqcbLayer.setVisibility(false);
         
         if(currentLayer.equals("counties")) { 
         	countyLayer.setVisibility(true);
@@ -495,6 +595,21 @@ public class Search implements EntryPoint {
         else if(currentLayer.equals("cities")) {
             cityLayer.setVisibility(true);   
             drawColor = cityColor;
+        }
+        else if(currentLayer.equals("rcds")) {
+    	    rcdLayer.setVisibleLayers(new int[]{2});
+            rcdLayer.setVisibility(true);   
+            drawColor = rcdColor;
+        }
+        else if(currentLayer.equals("rcdRegions")) {
+    	    rcdLayer.setVisibleLayers(new int[]{0});
+            rcdLayer.setVisibility(true);   
+            drawColor = rcdRegionColor;
+        }
+        else if(currentLayer.equals("rwqcbRegions")) {
+    	    rwqcbLayer.setVisibleLayers(new int[]{1});
+            rwqcbLayer.setVisibility(true);   
+            drawColor = rwqcbRegionColor;
         }
         else if(currentLayer.equals("huc8")) {
    	       hucLayer.setVisibleLayers(new int[]{0});
